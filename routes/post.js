@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
 
-router.get('/cases', (req,res) => res.send('cases page'))
+router.get('/post', (req,res) => res.send('post page'))
 
 module.exports = router

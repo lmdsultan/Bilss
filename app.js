@@ -15,15 +15,15 @@ app.get('/', (req, res) => res.send('API Up'))
 
 //13B
 const usersapi =  require('./routes/users')
-const casesapi =  require('./routes/cases')
-const caseapi = require('./routes/case')
+const postapi =  require('./routes/post')
+const menuapi = require('./routes/menu')
 const authapi = require('./routes/auth')
 
 
 //13C
 app.use(usersapi)
-app.use(casesapi)
-app.use(caseapi)
+app.use(postapi)
+app.use(menuapi)
 app.use(authapi)
 
 //3
