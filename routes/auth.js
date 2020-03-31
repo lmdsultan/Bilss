@@ -1,30 +1,35 @@
-//10
+//10 
 const express = require('express')
 //11
 const router = express.Router()
-//26
-const gravatar = require('gravatar')
-//28 
+//40
+const auth = require('../middleware/auth')
+//28  //43
 const bcrypt = require('bcryptjs')
-//32 
+//32   //43
 const jwt = require('jsonwebtoken')
-//36
+//36  //43
 const config = require('config')
-//17
+//17  //43
 const {check , validationResult} = require('express-validator')
-//21 import user module 
+//42
 const User = require('../models/User')
-//12
-router.post('/users',  
+//12 //41
+router.get('/auth', auth, async (req,res) => {
+    try{
+        const user = await User.findById(req.user.id).select('-password')
+        res.json(user)
+    } 
+    catch(err){
+        console.error(err.message)
+        res.status(500).send('Server Error')
+    }
+})
+router.post('/auth',  
 //18
 [
-    check('name', 'Name is required')
-    .not()
-    .isEmpty(),
-    check('email', 'Please include a valide email')
-    .isEmail(),
-    check('password', 'Please enter a password with 4 or more chars')
-    .isLength({ min: 4})
+    check('email', 'Please include a valide email').isEmail(),
+    check('password', 'Please enter a password').exists()
 ],
 //19 //22
 async (req, res) => {
@@ -33,34 +38,18 @@ async (req, res) => {
         return res.status(400).json({ errors: errors.array() })
     }
     //23
-    const { name, email, password} = req.body
+    const {email, password} = req.body
     //24
     try{
         //25
         let user = await User.findOne({ email })
-        if (user){
-           return res.status(400).json({ errors: [{ msg: 'User exists'}]})
+        if (!user){
+           return res.status(400).json({ errors: [{ msg: 'Invalied entry'}]})
         }
-        //27
-        const avatar = gravatar.url(email, {
-            s: '250',
-            r: 'pg',
-            d: 'mm'
-        })
-        //27A
-        user = new User({
-            name,
-            email,
-            avatar,
-            password
-        })
-        //29
-        const salt = await bcrypt.genSalt(10)
-        //30
-        user.password = await bcrypt.hash(password, salt)
-        //31
-        await user.save()
-        //33
+        const isMatch = await bcrypt.compare(password, user.password)
+        if(!isMatch){
+            return res.status(400).json({ errors: [{ msg: 'Invalied entry'}]})
+        }
         const payload = {
             user: {
                 id: user.id
@@ -82,4 +71,5 @@ async (req, res) => {
         res.status(500).send('Server Error')
     }
 }) 
+//13
 module.exports = router
