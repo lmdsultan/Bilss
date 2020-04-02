@@ -19,6 +19,7 @@ router.get('/profile', auth, async (req, res) => {
     try {
         const profile = await Profile.findOne({
             user: req.user.id
+            //populate(), which lets you reference documents in other collections
         }).populate(
             'user',
             ['name', 'avatar'])

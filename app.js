@@ -13,14 +13,14 @@ app.use(express.json({ extended: false}))
 // index
 app.get('/', (req, res) => res.send('API Up')) 
 
-//13B
+//13B // require route files
 const usersapi =  require('./routes/users')
 const postapi =  require('./routes/posts')
 const profileapi = require('./routes/profile')
 const authapi = require('./routes/auth')
 
 
-//13C
+//13C // register route files
 app.use(usersapi)
 app.use(postapi)
 app.use(profileapi)
