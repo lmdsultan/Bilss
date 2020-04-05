@@ -8,3 +8,4 @@
  npm i -D nodemon concurrently
  ### Frontend
  npm i axios redux-router-dom redux react-redux redux-thunk redux-devtools-extension moment react-moment 
+ npm i uuid 
